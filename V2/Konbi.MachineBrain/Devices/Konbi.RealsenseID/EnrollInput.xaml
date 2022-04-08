@@ -1,0 +1,36 @@
+﻿<Window x:Class="Konbi.RealsenseID.EnrollInput"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Konbi.RealsenseID"
+        mc:Ignorable="d"
+        Title="EnrollInput"
+        ResizeMode="NoResize"
+        Width="400" Height="200"
+        ShowInTaskbar="False"
+        WindowStyle="None"        
+        WindowStartupLocation="CenterOwner"
+        Background="White"
+        MouseDown="Window_MouseDown" BorderThickness="1" UseLayoutRounding="True">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="24"/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="24"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="24"/>
+            <RowDefinition Height="33*"/>
+            <RowDefinition Height="24"/>
+            <RowDefinition Height="28*"/>
+            <RowDefinition Height="90*"/>
+        </Grid.RowDefinitions>
+        <TextBlock x:Name="popupTitle" HorizontalAlignment="Left" TextWrapping="Wrap" d:LayoutOverrides="Height" FontSize="16" FontWeight="Medium" Text="Enroll User" Foreground="Black" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center"/>
+        <TextBox x:Name="UserNameInput" TextChanged="UserNameInput_TextChanged" MaxLength="30" MaxLines="1" Grid.ColumnSpan="2" TextWrapping="Wrap" Text="User Name" Grid.Row="3" Grid.Column="1" FontSize="16" Background="#00000000" Foreground="Black" BorderThickness="0,0,0,1" AcceptsReturn="False" AutoWordSelection="True"/>
+        <Label x:Name="UserInputErrorLabel" Foreground="Red" Content="invalid input" FontSize="14" Grid.Row="3" Grid.Column="2" HorizontalAlignment="Right" Visibility="Hidden"/>
+        <Button x:Name="EnrollCancelButton" Padding="10" Click="EnrollCancelButton_Click" IsCancel="True" Content="CANCEL" Grid.Column="1" HorizontalAlignment="Center" d:LayoutOverrides="Height" Grid.Row="4" VerticalAlignment="Center" BorderThickness="1"/>
+        <Button x:Name="EnrollOKButton" Padding="10" Click="EnrollOKButton_Click" IsDefault="True" Content="ENROLL" Grid.Column="2" HorizontalAlignment="Center" Grid.Row="4" VerticalAlignment="Center"  d:LayoutOverrides="Height"/>
+    </Grid>
+</Window>

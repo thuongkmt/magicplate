@@ -1,0 +1,56 @@
+<div [@routerTransition]>
+    <!-- <ng4-loading-spinner> </ng4-loading-spinner> -->
+    <div class="m-subheader">
+        <div class="d-flex align-items-center">
+            <div class="mr-auto col-md-6">
+                <h3 class="m-subheader__title m-subheader__title--separator">
+                    <span>{{l("Data Synchronization")}}</span>
+                </h3>
+            </div>
+        </div>
+    </div>
+    <div class="m-content">
+        <div class="m-portlet m-portlet--mobile">
+            <div class="m-portlet__body">
+                <div class="row">
+                    <div class="col-md-3 m--margin-bottom-10 m--margin-right-10">
+                        <button (click)="syncDataPartially()" style="width: 170px; text-align: left;"
+                            class="btn btn-primary blue">{{l("Partially Sync Data")}}</button>
+                    </div>
+                    <div class="col-md-3 align-items-right m--margin-bottom-10">
+                        <button (click)="syncDataFully()" style="width: 170px; text-align: left;"
+                            class="btn btn-primary blue">{{l("Fully Sync Data")}}</button>
+                    </div>
+                </div>
+                <div class="row mt-3 ml-2 no-gutters">
+                    <div class="col-md-2"><strong>Product Categories:</strong></div>
+                    <div class="col-md-3 pl-3">{{categoriesLastSynced}}</div>
+                </div>
+                <div class="row ml-2 no-gutters">
+                    <div class="col-md-2"><strong>Products:</strong></div>
+                    <div class="col-md-3 pl-3">{{productsLastSynced}}</div>
+                </div>
+                <div class="row ml-2 no-gutters">
+                    <div class="col-md-2"><strong>Plate Categories:</strong></div>
+                    <div class="col-md-3 pl-3">{{plateCategoriesLastSynced}}</div>
+                </div>
+                <div class="row ml-2 no-gutters">
+                    <div class="col-md-2"><strong>Plate Models:</strong></div>
+                    <div class="col-md-3 pl-3">{{platesLastSynced}}</div>
+                </div>
+                <div class="row ml-2 no-gutters">
+                    <div class="col-md-2"><strong>Inventory:</strong></div>
+                    <div class="col-md-3 pl-3">{{inventoryLastSynced}}</div>
+                </div>
+                <div class="row ml-2 no-gutters">
+                    <div class="col-md-2"><strong>Sessions:</strong></div>
+                    <div class="col-md-3 pl-3">{{sessionLastSynced}}</div>
+                </div>
+                <div class="row ml-2 no-gutters">
+                    <div class="col-md-2"><strong>Menu Scheduler:</strong></div>
+                    <div class="col-md-3 pl-3">{{menuSchedulerLastSynced}}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

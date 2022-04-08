@@ -1,0 +1,244 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content='True' name='HandheldFriendly' />
+    <meta content='width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;' name='viewport' />
+    <link rel="stylesheet" href="/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="/assets/fonts/css/all.css">
+    <link rel="stylesheet" href="/css/animate.css" type="text/css">
+    <link rel="stylesheet" href="/css/app.css" type="text/css">
+    <link href="css/cotfSheet.css" rel="stylesheet" />
+
+    <title>Magicplate - Customer UI</title>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="msapplication-TileImage" content="images/icons/logo-144x144.png">
+    <meta name="msapplication-TileColor" content="#2F3BA2">
+
+    <script src="/js/jquery.js"></script>
+    <script src="/js/popper.min.js"></script>
+    <script src="/js/lodash.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/jquery.textfill.min.js"></script>
+    <script src="/js/qrcode.min.js"></script>
+    <script src="/js/signalr.js"></script>
+    <script src="/js/abp.signalr-client.js"></script>
+    <script src="/js/app/app.js"></script>
+</head>
+
+<body onkeyup="onKeyUp()">
+    <div class="container-fluid p-0" style="height: 100%; overflow-y: hidden; overflow-x: hidden;">
+        <!-- Header -->
+        <div class="row row-header">
+            <div class="col col-index">#</div>
+            <div class="col col-plate">Plate</div>
+            <div class="col col-price">Price</div>
+            <div class="col-6 col-summary">Summary</div>
+        </div>
+
+        <!-- Content -->
+        <div class="row" style="position: relative;">
+            <!-- Show transaction items. -->
+            <div id="rounded-list" class="column column-items">
+            </div>
+
+            <!-- Show Summary. -->
+            <div class="column column-summary">
+                <!-- Show total. -->
+                <div class="row price-zone" style="margin-left: 0px; height: 11.06em;">
+                    <div class="col"
+                        style="border-right: 1px solid gray; border-bottom: 1px solid #A9A9A9; ">
+                        <p class="title-summary">Total Plates:</p>
+                        <p id="plate-count" class="value-summary">0</p>
+                    </div>
+                    <div class="col" style="border-bottom: 1px solid #A9A9A9;">
+                        <p class="title-summary">Total Price:</p>
+                        <p id="price" class="value-summary">$0.00</p>
+                    </div>
+                </div>
+                <div class="row" id="discount-container" style="display:none">
+                    <div class="col mt-2"
+                        style="text-align: center;font-weight: bold;color: darkorange;font-size: 18pt;">
+                        <span>Discount: <span id="discount-value">0</span>%</span>
+                    </div>
+
+                </div>
+                <!-- Show Message. -->
+                <div class="row" style="margin-left: 0px; height: 5.53em;">
+                    <div id="message-div" class="col" style="padding-left: 0;">
+                        <p id="message-processing" class="message-summary">To begin, please place tray down</p>
+                        <p id="konbi-credit-msg" class="message-summary"></p>
+                    </div>
+                </div>
+
+                <!-- Show Payment Type. -->
+                <div id="select-payment" class="row payment-btn-group justify-content-center"
+                    style="margin-left: 0px; height: 19.36em; margin-right: 5px;">
+                    <div class="col btn-logo-payment d-none payment-btn-template">
+                        <p class="title-logo-payment" style="padding: 1em 0;">
+                            Payment method name
+                        </p>
+                        <img class="image-logo-payment" src="../images/logo/Mastercard_Visa.jpg" />
+                    </div>
+
+
+                </div>
+
+                <!-- Show icon loading -->
+                <div id="show-loading" class="row" style="margin-left: 0px; height: 100%;">
+                    <img src="../images/loading/loading.gif" class="loading-gif" />
+                </div>
+
+                <!-- Show Select MasterCard Visa -->
+                <div id="select-mastercardvisa" style="text-align: center;">
+                    <img class="image-logo-payment" src="../images/logo/Mastercard_Visa.jpg" />
+                </div>
+
+                <!-- Show Select Ezlink NetsFlashPay -->
+                <div id="select-ezlink-netsflashpay" style="text-align: center;">
+                    <img class="image-logo-payment" src="../images/logo/Ezlink_NetsFlashPay.jpg" />
+                </div>
+                <div id="select-qr-dash" style="text-align: center;" class="row justify-content-center">
+                    <div id="qrcode"></div>
+                </div>
+
+                <!-- Show button switch -->
+                <div id="print-receipt" style="text-align: center; margin-top: 150px;">
+                    <button type="button" class="btn btn-success btn-lg btn-radius" onclick="printReceipt()">Click
+                        For
+                        Receipt</button>
+                </div>
+
+                <!-- Show button switch -->
+                <div id="change-payment-method" style="text-align: center; margin-top: 150px;">
+                    <button type="button" class="btn btn-danger btn-lg btn-radius" onclick="changePaymentMethod()">Click
+                        to select other Payment Methods</button>
+                </div>
+
+                <!-- Count down -->
+                <div class="row count-down">
+                    <div class="col d-none" id="show-count-down" style=" font-weight: bold;">
+                        <div style="display: inline-block;">Timeout:&nbsp;</div>
+                        <div style="display: inline-block;" id="count-down"></div>
+                        <div style="display: inline-block;">&nbsp;secs</div>
+                    </div>
+                </div>
+
+                <input type="hidden" id="transaction" name="transaction" value="">
+            </div>
+            <div style="clear: both;"></div>
+        </div>
+		<div class="row bg-dark">
+			<div class="col-sm-6">
+				<div id="connection-status">
+                    <!--
+                        Show version
+                    -->
+                    <span class="version">Konbini v0.5</span>
+                    <!--
+                        Show Slave Server connection status
+                    -->
+                    | <span class="service-number">1.</span> <i id="slaveServer" class="fa fa-xs fa-spinner fa-spin text-danger" title="Slave server"></i>
+                    <!--
+                        Show Server connection status
+                    -->
+                    | <span class="service-number">2.</span> <i id="server" class="fa fa-xs fa-server" title="Server"></i>
+					<!--
+                        Show RabbitMQ connection status
+                    -->
+                    | <span class="service-number">3.</span> <i id="rabbitmq" class="fa fa-xs fa-car-battery" title="RabbitMQ server"></i>
+                    <!--
+                        Show RFID connection status
+                    -->
+                    | <span class="service-number">4.</span> <i id="rfid" class="fa fa-xs fa-broadcast-tower" title="RFID reader"></i>
+                    <!--
+                        Show LightAlarm connection status
+                    -->
+                    | <span class="service-number">5.</span> <i id="lightalarm" class="fa fa-xs fa-lightbulb" title="Light alarm"></i>
+                    <!--
+                        Show Camera connection status
+                    -->
+                    | <span class="service-number">6.</span> <i id="camera" class="fa fa-xs fa-camera" title="Camera"></i>
+                    <!--
+                        Show IUC connection status
+                    -->
+                    | <span class="service-number">7.</span> <i id="iuc" class="fa fa-xs fa-money-check-alt" title="IUC reader"></i>
+                    <!--
+                        Show Konbi Credits Card Reader connection status
+                    -->
+                    | <span class="service-number">8.</span> <i id="konbiCredits" class="fa fa-xs fa-id-card" title="Konbi Credits"></i>
+                </div>
+                
+			</div>
+			<div class="col-sm-6">
+				<div id="session-info">
+                    <b>Session:</b> <span id="text-session-info" class="text-right"></span>
+                </div>
+			</div>
+		</div>
+    </div>
+
+    <script>
+        CheckServiceStatus();
+
+        function printReceipt() {
+            abp.signalr.hubs.common.invoke("printReceipt", $('#transaction').val()).then(function (result) {});
+        }
+
+        function changePaymentMethod() {
+            $('#message-processing').text('Please Select Payment Method');
+            $('#message-processing').removeClass('message-error');
+            $('#select-payment').show();
+            $('#show-loading').hide();
+            $('#select-mastercardvisa').hide();
+            $('#select-ezlink-netsflashpay').hide();
+            $('#konbi-credit-msg').hide();
+            $('#print-receipt').hide();
+            $('#change-payment-method').hide();
+            $('#count-down').text("");
+            $('#show-count-down').addClass('d-none');
+        }
+
+        function onClickPay(method) {
+            console.log("Method log by Thuong: " + method);
+            if ($('.order-line').length > 0 && $('#btn-message-action-pay').text() === 'Tap Here to Pay') {
+                abp.signalr.hubs.common.invoke("onClickPay", method).then(function (result) {});
+            }
+        }
+        $(document).on('ready', function () {
+            $('body').on('click', '.btn-pay', function () {
+                console.log("ready event: " + $(this).data('method'));
+                abp.signalr.hubs.common.invoke("onClickPay", $(this).data('method')).then(function (
+                    result) {});
+            });
+
+            $('body').on('click', '.btn-logo-payment', function () {
+                var paymentMode = $(this).data('method');
+                console.log("What is this: " + paymentMode);
+                abp.signalr.hubs.common.invoke("onClickPay", paymentMode).then(function (
+                    result) {
+                        console.log("result: " + result);
+                    });
+            });
+        });
+
+        function onKeyUp() {}
+
+        function CheckServiceStatus(){
+            $.ajax({
+                type: "POST",
+                url: "http://localhost:22742/api/services/app/ServiceStatus/CheckServiceStatus",
+                dataType: "json",
+                success: function (result, status, xhr) {
+                    //console.log("start call /api/services/app/ServiceStatus/CheckServiceStatus API");
+                },
+                error: function (xhr, status, error) {
+                    console.log("Cal API result: " + status + " " + error + " " + xhr.status + " " + xhr.statusText)
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

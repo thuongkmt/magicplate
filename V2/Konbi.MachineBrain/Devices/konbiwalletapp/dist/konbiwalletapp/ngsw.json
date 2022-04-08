@@ -1,0 +1,86 @@
+{
+  "configVersion": 1,
+  "timestamp": 1554371030858,
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "updateMode": "prefetch",
+      "urls": [
+        "/es2015-polyfills.c5dd28b362270c767b34.js",
+        "/favicon.ico",
+        "/firebase-messaging-sw.js",
+        "/index.html",
+        "/main.882b96a248ec16cbbb5f.js",
+        "/polyfills.d37cf3df0eb92a316744.js",
+        "/runtime.26209474bfa8dc87a77c.js",
+        "/styles.9baaefd58a274879c523.css"
+      ],
+      "patterns": []
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "urls": [
+        "/assets/appconfig.1.json",
+        "/assets/appconfig.json",
+        "/assets/icons/icon-128x128.png",
+        "/assets/icons/icon-144x144.png",
+        "/assets/icons/icon-152x152.png",
+        "/assets/icons/icon-192x192.png",
+        "/assets/icons/icon-384x384.png",
+        "/assets/icons/icon-512x512.png",
+        "/assets/icons/icon-72x72.png",
+        "/assets/icons/icon-96x96.png",
+        "/assets/images/logo.png",
+        "/assets/images/qrcode.png",
+        "/assets/my-rx-stomp.config.ts"
+      ],
+      "patterns": []
+    }
+  ],
+  "dataGroups": [],
+  "hashTable": {
+    "/assets/appconfig.1.json": "73253c149dcd2706faa58e0b491a268761e06002",
+    "/assets/appconfig.json": "632665030c2ff8567a4126df85c3dc1dde58679f",
+    "/assets/icons/icon-128x128.png": "dae3b6ed49bdaf4327b92531d4b5b4a5d30c7532",
+    "/assets/icons/icon-144x144.png": "b0bd89982e08f9bd2b642928f5391915b74799a7",
+    "/assets/icons/icon-152x152.png": "7479a9477815dfd9668d60f8b3b2fba709b91310",
+    "/assets/icons/icon-192x192.png": "1abd80d431a237a853ce38147d8c63752f10933b",
+    "/assets/icons/icon-384x384.png": "329749cd6393768d3131ed6304c136b1ca05f2fd",
+    "/assets/icons/icon-512x512.png": "559d9c4318b45a1f2b10596bbb4c960fe521dbcc",
+    "/assets/icons/icon-72x72.png": "c457e56089a36952cd67156f9996bc4ce54a5ed9",
+    "/assets/icons/icon-96x96.png": "3914125a4b445bf111c5627875fc190f560daa41",
+    "/assets/images/logo.png": "c15f7b304104732b9dcac56ced4e0b607de2e0ea",
+    "/assets/images/qrcode.png": "738e58c50689a591762d9b20d6bab46499580eb8",
+    "/assets/my-rx-stomp.config.ts": "9e42834ef1218159ade8302c22ec1a95a0fe49c7",
+    "/es2015-polyfills.c5dd28b362270c767b34.js": "b7a81c61d32b0b12737f0c13f45973ba391cd7f9",
+    "/favicon.ico": "84161b857f5c547e3699ddfbffc6d8d737542e01",
+    "/firebase-messaging-sw.js": "0c3a28701cc05fd210ce8ce45bc194e8c37eb88f",
+    "/index.html": "fc0ecdaa0bd98ad62f663012277a5019b1cf58f7",
+    "/main.882b96a248ec16cbbb5f.js": "99ef2ad9b42bdc84ddfb74a35547684fcd5d181c",
+    "/polyfills.d37cf3df0eb92a316744.js": "2cf5115e17552ef0ee5167674ea21962877f540c",
+    "/runtime.26209474bfa8dc87a77c.js": "b62956c2192bfe5516d6374e753773901ed50ec5",
+    "/styles.9baaefd58a274879c523.css": "76150bcfb83635b3b43f58d7235edf1798704711"
+  },
+  "navigationUrls": [
+    {
+      "positive": true,
+      "regex": "^\\/.*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*\\.[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*\\/.*$"
+    }
+  ]
+}

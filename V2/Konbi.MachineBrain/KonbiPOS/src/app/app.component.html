@@ -1,0 +1,199 @@
+<div class="row">
+  <div class="col-md-4">
+    <div class="card left-content">
+      <div class="row">
+        <div class="col-md-12">
+          <table class="table table-bordered">
+            <thead class="thead-dark">
+              <tr>
+                <th class="text-uppercase font-weight-bold text-center" style="width: 15%" scope="col">
+                  NO
+                </th>
+                <th class="text-uppercase font-weight-bold text-center" style="width: 50%" scope="col">
+                  ITEMS
+                </th>
+                <th class="text-uppercase font-weight-bold text-center" style="width: 25%" scope="col">
+                  Price
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let orderItem of orderItemList; let i = index" (click)="selectOrderItem(orderItem)"
+                class="{{orderItem.uId === selectedOrderItem.uId?'hightlight':''}}">
+                <th class="font-weight-normal text-center" style="width: 15%" scope="row ">{{i+1}}</th>
+                <td class="font-weight-normal" style="width: 50%">
+                  {{orderItem.name| truncate:[25, '...']}}</td>
+                <td class="font-weight-normal text-right" style="width: 25%">
+                  ${{orderItem.price | number:'1.2-2'}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div style="padding-left: 8px; padding-right: 8px">
+        <div class="row">
+          <div class="col-md-6 font-weight-bold font-size-gst">
+            Total Items:
+          </div>
+          <div class="col-md-6 font-weight-bold font-size-gst text-right">
+            {{totalItems}}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col font-weight-bold font-size-gst">
+            Discount: ${{orderInfo?.discountAmount| number:'1.2-2'}}
+          </div>
+          <div class="col font-weight-bold font-size-gst text-right">
+            {{orderInfo?.taxName}} Amt: ${{orderInfo?.taxAmount| number:'1.2-2'}}
+          </div>
+        </div>
+        <div class="row" *ngIf="orderInfo?.taxPercentage>0">
+          <div class="col-md-6 font-weight-bold font-size-gst">
+            Amount excl. {{orderInfo?.taxName}}:
+          </div>
+          <div class="col-md-6 font-weight-bold font-size-gst text-right">
+            ${{orderInfo?.amountBeforeTax| number:'1.2-2'}}
+          </div>
+        </div>
+
+        <div class="row" style="margin-top: 8px">
+          <div class="col-md-6 font-weight-bold font-size-bottom">
+            Total Price:
+          </div>
+          <div class="col-md-6 font-weight-bold font-size-bottom text-right">
+            ${{orderInfo?.total | number:'1.2-2'}}
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="payment-message-container {{paymentMessageClass}} text-center">
+              <div class="message">
+                <span class="payment-message">{{alertMessage}}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="countDownValue > 0" class="row" style="margin-top: 15px">
+          <div class="col-md-12" style="text-align: center; font-size: 28px">
+            <span>Timeout: {{countDownValue}} secs</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-5" style="padding-left: 0; padding-right: 0">
+    <div class="card center-content">
+      <div class="card-body">
+        <a *ngFor="let prod of productList;" class="card prod-card {{isOrdered(prod)? 'highlight-border': ''}}"
+          href="javascript:void(0)" (click)="addOrderItem(prod,$event)">
+          <div class="card-body">
+            <div class="item-product">
+              <h5 class="card-title">{{ prod.productName | truncate:[40, '...'] }} </h5>
+            </div>
+            <h6 class="card-subtitle">${{prod.price | number: '1.2-2'}}</h6>
+          </div>
+        </a>
+      </div>
+    </div>
+    <div class="card center-content-bottom">
+      <div class="card-body">
+        <a *ngFor="let cate of categoryList;"
+          class="card cate-card {{cate.id === currentCate.id? 'highlight-border':''}}" href="javascript:void(0)"
+          (click)="changeCate(cate)">
+          <div class="card-body">
+            <h5 class="card-title">{{ cate.name | truncate:[28, '...'] }} </h5>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="card right-content">
+      <pos-virtual-keyboard (virKeyboardOutputValue)="handleVirtualKeyboardInput($event)"></pos-virtual-keyboard>
+      <div class="simple-keyboard simple-keyboard hg-theme-default hg-layout-default hg-layout-default">
+        <div class="hg-row">
+          <button [disabled]="isDisabled()" [class.btn-pulse]="isDisabled()"
+            class="hg-button hg-standardBtn text-center {{isDisabled()?'btn-disabled':'btn-enabled'}}"
+            (click)="openCashPaymentConfirmationModal()">
+            <span style="font-size: 20px; font-weight: 800">Cash Payment</span>
+          </button>
+          <button [disabled]="isDisabled()" [class.btn-pulse]="isDisabled()"
+            class="hg-button hg-standardBtn text-center {{isDisabled()?'btn-disabled':'btn-enabled'}}
+             {{isFacialRecog()? 'disappear': ''}}"
+            data="mode.key" (click)="executeCashlessPayment('faciaL_RECOGNITION')">
+            <span style="font-size: 20px; font-weight: 800">Facial Recog</span>
+          </button>
+        </div>
+        <div class="hg-row">
+          <button [disabled]="isDisabled()" *ngFor="let mode of paymentModes| keyvalue"
+            class="hg-button hg-standardBtn {{isDisabled()?'btn-disabled':'btn-enabled'}}" data="mode.key"
+            (click)="executeCashlessPayment(mode.key)">
+            <span style="font-size: 20px; line-height: 28px; font-weight: 800;" [innerHTML]="mode.value"></span>
+          </button>
+        </div>
+        <div class="hg-row">
+          <button [disabled]="isVoidItemDisabled()"
+            class="hg-button hg-standardBtn void-item-btn text-center {{isVoidItemDisabled()?'btn-disabled':'btn-cancel-enabled'}}"
+            (click)="removeOrderItem()" style="width: 50%;">
+            <span style="font-size: 20px;">Void Item</span>
+          </button>
+          <button [disabled]="isCancelSalesDisabled()"
+            class="hg-button hg-standardBtn text-center {{isCancelSalesDisabled()?'btn-disabled':'btn-cancel-enabled'}}"
+            (click)="cancelSales()" style="width: 50%;">
+            <span style="font-size: 20px">Cancel Sales</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-12">
+    <div class="card  footer-bar">
+      <div class="row" style="height: 100%;">
+        <div class="col-4">
+          <div class="connect-status-icon">
+            <i class="fa fa-circle {{connectionState === 1? 'connected-success': 'connected-failed'}}"
+              style="font-size: 18px;"></i>
+          </div>
+        </div>
+        <div class="col-5 text-center">
+          <div class="session-info">
+            <span *ngIf="sessionName" [hidden]="!sessionName">Session: {{sessionName}}</span>
+            <span class="text-danger" [hidden]="sessionName">No appropriate session</span>
+            <span *ngIf="sessionFromTime">- Time: {{sessionFromTime | date: 'HH:mm'}} -
+              {{sessionToTime | date: 'HH:mm'}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #cashPaymentConfirmation>
+  <div class="modal-content">
+    <div class="modal-body text-center" style="height: 120px;">
+      <h3 style="font-size: 36px">Does the customer want to pay by cash?</h3>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary btn-cancel" (click)="cancelCashPayment()">Cancel</button>
+      <button class="btn btn-primary btn-confirm" (click)="executeCashPayment()">Confirm</button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #cashPaymentAlert>
+  <div class="modal-content">
+    <div class="modal-body text-center">
+      <h3 style="font-size: 36px">The transaction is completed.</h3>
+    </div>
+    <div class="modal-footer text-center">
+      <button class="btn btn-primary btn-confirm" (click)="cashPaymentConfirm()">OK</button>
+    </div>
+  </div>
+</ng-template>
+<ngx-spinner></ngx-spinner>

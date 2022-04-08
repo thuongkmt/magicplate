@@ -1,0 +1,2 @@
+2019-05-08 10:06:50.656 +08:00 [Information] Connecting to RabbitMQ 128.199.209.115
+2019-05-08 10:06:53.008 +08:00 [Information] Connecting to RabbitMQ 128.199.209.115

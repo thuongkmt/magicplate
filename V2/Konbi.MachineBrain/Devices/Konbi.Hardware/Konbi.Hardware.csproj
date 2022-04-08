@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="PCSC" Version="5.0.0" />
+    <PackageReference Include="PCSC.Iso7816" Version="5.0.0" />
+  </ItemGroup>
+
+</Project>

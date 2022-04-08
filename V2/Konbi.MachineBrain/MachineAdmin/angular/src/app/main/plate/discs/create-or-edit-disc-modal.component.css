@@ -1,0 +1,39 @@
+#tabledishs {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  }
+  
+  #tabledishs td, #tabledishs th {
+    padding: 8px;
+  }
+  
+  #tabledishs tr:nth-child(even){background-color: #f2f2f2;}
+  
+  #tabledishs tr:hover {background-color: #ddd;}
+  
+  #tabledishs th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    color: white;
+  }
+
+  .tableFixHeadLeft {
+    overflow-y: auto;
+    max-height: 500px;
+  }
+  
+  .tableFixHeadLeft table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  
+  .tableFixHeadLeft th,
+  .tableFixHeadLeft td {
+    padding: 8px 16px;
+  }
+  
+  .tableFixHeadLeft th {
+    position: sticky;
+    top: 0;
+    background: #716aca;
+  }

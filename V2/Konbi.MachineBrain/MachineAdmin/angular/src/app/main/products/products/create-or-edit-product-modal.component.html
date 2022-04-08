@@ -1,0 +1,174 @@
+<div bsModal #createOrEditModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+    aria-labelledby="createOrEditModal" aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form *ngIf="active" #productForm="ngForm" novalidate (ngSubmit)="save()" autocomplete="off"
+                (keydown.enter)="$event.preventDefault()">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        <span *ngIf="product.id">{{l("EditProduct")}}</span>
+                        <span *ngIf="!product.id">{{l("CreateNewProduct")}}</span>
+                    </h4>
+                    <button type="button" class="close" (click)="close()" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group m-form__group">
+                        <label for="PlateCategoryName">{{l("Category")}}</label>
+                        <div class="input-group">
+                            <input class="form-control" id="ProductCategoryName" name="productCategoryName"
+                                [(ngModel)]="categoryName" type="text" disabled>
+                            <div class="input-group-append">
+                                <button class="btn btn-primary blue" (click)="openSelectCategoryModal()" type="button">
+                                    <i class="fa fa-search"></i> {{l("Pick")}}</button>
+                            </div>
+                            <div class="input-group-prepend">
+                                <button class="btn btn-danger" type="button" (click)="setCategoryIdNull()">
+                                    <i class="fa fa-close"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <input class="form-control" name="product.categoryId" [(ngModel)]="product.categoryId" type="text"
+                        hidden>
+
+
+                    <div class="form-group">
+                        <label for="Product_Name">{{l("Name")}}</label>
+                        <input type="text" id="Product_Name" class="form-control" [(ngModel)]="product.name" name="Name"
+                            required />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Product_SKU">{{l("SKU")}}*</label>
+                        <div class="form-inline">
+                            <div class="form-group">
+                                <input style="text-transform: uppercase;" type="text" id="Product_SKU"
+                                    class="form-control" [(ngModel)]="product.sku"
+                                    [disabled]="product.autoGenerateSKU|| !allowEditingSKU" name="sku" />
+                            </div>
+                            <div class="form-group ml-3" *ngIf="allowEditingSKU">
+                                <input type="checkbox" id="Product_Auto_SKU" (change)="autoGenerateSKUChanged($event)"
+                                    class="form-control form-control-lg" [(ngModel)]="product.autoGenerateSKU"
+                                    name="autoGenerateSKU" />
+                                <label class="ml-2" for="Product_Auto_SKU"> {{l(" Auto Generate")}}</label>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label for="Product_Barcode">{{l("Barcode")}}</label>
+                                <input type="text" id="Product_Barcode" class="form-control"
+                                    [(ngModel)]="product.barcode" name="Barcode" (keyup)="onKeyupBarcode($event)" />
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="form-group">
+                                <label for="Product_Price">{{l("Price")}}</label>
+                                <input type="number" id="Product_Price" class="form-control" [(ngModel)]="product.price"
+                                    name="Price" />
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="form-group">
+                                <label for="Product_Price">Display Order</label>
+                                <input type="number" class="form-control" [(ngModel)]="product.displayOrder"
+                                    name="displayOrder" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- <div class="form-group">
+                        <label for="Product_ContractorPrice">{{l("ContractorPrice")}}</label>
+                        <input type="number" id="Product_ContractorPrice" class="form-control" [(ngModel)]="product.contractorPrice" name="ContractorPrice" />
+                    </div> -->
+
+                    <div class="form-group">
+                        <label for="Product_Desc">{{l("Description")}}</label>
+                        <textarea id="Product_Desc" name="Desc" [(ngModel)]="product.desc" class="form-control"
+                            rows="4"></textarea>
+                    </div>
+
+                    <div class="form-group" style="display: flex;">
+
+
+                        <div class="col-md-6" style="float: left; padding-left: 0px;">
+                            <label for="Product_ImageUrl">{{l("Product picture (max 3 images)")}}</label>
+                            <div class="form-group" id="Product_ImageUrl">
+                                <div>
+                                    <div ngfDrop multiple="3" selectable="1" [(validDrag)]="validComboDrag"
+                                        [(files)]="files" accept="image/*" [maxSize]="maxSize"
+                                        [(lastInvalids)]="lastInvalids" [(dragFiles)]="dragFiles"
+                                        class="well my-drop-zone" [class.invalid-drag]="validComboDrag===false"
+                                        [class.valid-drag]="validComboDrag" (filesChange)="lastFileAt=getDate()">
+                                        <div style="font-size: 15px; text-align: center; padding-top: 15px;"> Click
+                                            select/Drop images to zone</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div *ngIf="files.length > 0" class="col-md-6"
+                            style="float: left; padding-left: 0px; padding-top: 5px;">
+                            <div *ngFor="let item of files;let i=index" style="float: left; margin-left: 10px">
+                                <div *ngIf="['image/gif','image/png','image/jpeg'].indexOf(item.type)>=0">
+                                    <div class="previewIcon" [ngfBackground]="item"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div *ngIf="files.length == 0" class="col-md-6"
+                            style="float: left; padding-left: 0px; padding-top: 5px;">
+                            <div *ngFor="let item of product.imageUrl.split('|');let i=index"
+                                style="float: left; margin-left: 10px">
+                                <img [src]="item" style="width: 100px; height: 100px;">
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button [disabled]="saving" type="button" class="btn btn-default"
+                        (click)="close()">{{l("Cancel")}}</button>
+                    <button type="submit" class="btn btn-primary blue" [disabled]="!productForm.form.valid"
+                        [buttonBusy]="saving" [disabled]="saving" [busyText]="l('SavingWithThreeDot')">
+                        <i class="fa fa-save"></i>
+                        <span>{{l("Save")}}</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <categoryLookupTableModal #categoryLookupTableModal (modalSave)="getNewCategoryId()"></categoryLookupTableModal>
+
+    <!-- <div bsModal #scanPlateModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="scanPlateModal" aria-hidden="true"
+        [config]="{backdrop: 'static'}">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        <span>{{l("Scan Plate Code")}}</span>
+                    </h4>
+                    <button type="button" class="close" (click)="onCloseScanPlateModel()" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="m-portlet m-portlet--mobile">
+                    <div class="m-portlet__body" style="text-align: center">
+                        <div style="font-weight: bold; font-size: 16px; color: red">Plate Code: {{tmpPlateCode}}</div>
+                        <div style="font-weight: bold; margin-top: 10px;">( Please put your plate into the RFID table to detect code )</div>
+                    </div>
+                </div>
+
+                <div class="modal-footer" style="text-align: center">
+                    <button [disabled]="saving" type="button" class="btn btn-primary blue" (click)="onUseScanPlateModel()">{{l("Use code")}}</button>
+                </div>
+            </div>
+        </div>
+    </div> -->
+</div>

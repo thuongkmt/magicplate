@@ -1,0 +1,51 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\common.props"></Import>
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <AssetTargetFallback>$(AssetTargetFallback);portable-net45+win8+wp8+wpa81;</AssetTargetFallback>
+    <AssemblyName>KonbiCloud.Application</AssemblyName>
+    <PackageId>KonbiCloud.Application</PackageId>
+    <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
+    <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <RootNamespace>KonbiCloud</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Azure\**" />
+    <EmbeddedResource Remove="Azure\**" />
+    <None Remove="Azure\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="BackgroundJobs\PaymentResponseNsqIncomingMessageService.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="EPPlus.Core" Version="1.5.4" />
+    <PackageReference Include="Microsoft.Azure.Devices" Version="1.17.1" />
+    <PackageReference Include="Microsoft.Azure.Devices.Client" Version="1.18.1" />
+    <PackageReference Include="Microsoft.Azure.EventHubs" Version="2.2.1" />
+    <PackageReference Include="Microsoft.Azure.ServiceBus" Version="3.1.1" />
+    <PackageReference Include="Microsoft.WindowsAzure.ConfigurationManager" Version="3.2.3" />
+    <PackageReference Include="nsqsharp" Version="0.5.4" />
+    <PackageReference Include="SeriLog" Version="2.8.0" />
+    <PackageReference Include="Serilog.Sinks.RollingFile" Version="3.3.0" />
+    <PackageReference Include="ServiceStack.Redis.Core" Version="5.4.0" />
+    <PackageReference Include="Slack.Webhooks" Version="1.0.5" />
+    <PackageReference Include="StackExchange.Redis" Version="2.0.513" />
+    <PackageReference Include="System.IO.Ports" Version="4.5.0" />
+    <PackageReference Include="WindowsAzure.Storage" Version="9.3.2" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\KonbiCloud.Application.Shared\KonbiCloud.Application.Shared.csproj" />
+    <ProjectReference Include="..\KonbiCloud.Core\KonbiCloud.Core.csproj" />
+    <ProjectReference Include="..\KonbiCloud.EntityFrameworkCore\KonbiCloud.EntityFrameworkCore.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System.Transactions" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Messaging\Handlers\" />
+    <Folder Include="Products\Helpers\" />
+  </ItemGroup>
+</Project>

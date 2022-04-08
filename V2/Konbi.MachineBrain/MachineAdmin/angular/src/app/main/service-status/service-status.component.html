@@ -1,0 +1,104 @@
+<div [@routerTransition]>
+    <div class="m-subheader">
+        <div class="d-flex align-items-center">
+            <div class="mr-auto col-md-6">
+                <h3 class="m-subheader__title">
+                    <span>{{l("ServiceStatus")}}</span>
+                </h3>
+            </div>
+            <div class="col-md-6 text-right">
+                <button (click)="getAllServices()" class="btn btn-primary">{{l("Refresh")}}</button>
+            </div>
+        </div>
+    </div>
+    <div class="m-content">
+        <div class="m-portlet m-portlet--mobile">
+            <div class="m-portlet__body">
+                <div class="row align-items-center">
+                    <!--<Primeng-Datatable-Start>-->
+                    <div class="primeng-datatable-container">
+                        <p-table #dataTable (onLazyLoad)="getAllServices($event)" rows="50" [paginator]="false"
+                            [lazy]="true" [scrollable]="true" ScrollWidth="100%" [value]="services">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th>
+                                        {{l("ServiceName")}}
+                                    </th>
+                                    <th>
+                                        {{l("Status")}}
+                                    </th>
+                                    <th>
+
+                                    </th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-record="$implicit" let-mlIndex="index">
+                                <tr>
+                                    <td>
+                                        <span class="ui-column-title"> {{record.name}}</span>
+                                    </td>
+                                    <td>
+                                        <span
+                                            *ngIf='record.status==undefined || record.status == null'>Checking...</span>
+                                        <i *ngIf='record.status === true' class='fa fa-2x fa-play-circle'
+                                            style='color:green' data-toggle='tooltip' data-placement='bottom'
+                                            title='{{record.message}}'></i>
+                                        <i *ngIf='record.status === false' class='fa fa-2x fa-stop-circle'
+                                            style='color:red' data-toggle='tooltip' data-placement='bottom'
+                                            title='{{record.message}}'></i>
+                                    </td>
+                                    <th class="text-right">
+                                        <button (click)="updateService(record)" class="btn btn-sm btn-danger"
+                                            style="align-items: left;">{{l("Archive")}}</button>
+                                    </th>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+
+                        <!--Archieve Service-->
+                        <div style="margin-top: 30px">
+                            <div class="col-sm-12">
+                                <span class="clickable-item text-muted" *ngIf="!advancedFiltersAreShown"
+                                    (click)="advancedFiltersAreShown=!advancedFiltersAreShown"><i
+                                        class="fa fa-angle-down"></i> {{l("ShowArchievedServices")}} </span>
+                                <span class="clickable-item text-muted" *ngIf="advancedFiltersAreShown"
+                                    (click)="advancedFiltersAreShown=!advancedFiltersAreShown"><i
+                                        class="fa fa-angle-up"></i> {{l("HideArchievedServices")}} </span>
+                            </div>
+                        </div>
+
+                        <div [hidden]="!advancedFiltersAreShown">
+                            <div class="col-md-12">
+                                <div class="m-separator m-separator--dashed"></div>
+                            </div>
+
+                            <p-table #dataTable (onLazyLoad)="getAllServices($event)" rows="50" [paginator]="false"
+                                [lazy]="true" [scrollable]="true" ScrollWidth="100%" [value]="archiveServices">
+                                <ng-template pTemplate="header">
+                                    <tr>
+                                        <th>
+                                            {{l("ServiceName")}}
+                                        </th>
+                                        <th>
+                                        </th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-record="$implicit" let-mlIndex="index">
+                                    <tr>
+                                        <td>
+                                            <span class="ui-column-title"> {{record.name}}</span>
+                                        </td>
+                                        <td class="text-right">
+                                            <button (click)="updateService(record)" class="btn btn-sm btn-primary"
+                                                style="margin-right: 0">{{l("Unarchive")}}</button>
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                            </p-table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,53 @@
+<div bsModal #createOrEditModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+    aria-labelledby="createOrEditModal" aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form *ngIf="active" #sessionForm="ngForm" novalidate (ngSubmit)="save()" autocomplete="off">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        <span *ngIf="session.id">{{l("EditSession")}}</span>
+                        <span *ngIf="!session.id">{{l("CreateNewSession")}}</span>
+                    </h4>
+                    <button type="button" class="close" (click)="close()" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="Session_Name">{{l("Name")}}</label>
+                        <input type="text" id="Session_Name" class="form-control" [(ngModel)]="session.name" name="Name"
+                            required />
+                    </div>
+
+                    <div class="row">
+                        <label class="col col-md-12" for="Session_FromHrs">{{l("FromHrs")}}</label>
+                        <div class="col col-md-12">
+                            <p-calendar id="Session_FromHrs" [(ngModel)]="session.fromHrs" timeOnly="true"
+                                dataType="string" hourFormat="24" id="Session_FromHrs" name="FromHrs"
+                                [style]="{'width':'100%'}" [inputStyle]="{'width':'100%','height':'40px'}"></p-calendar>
+                        </div>
+                    </div>
+                    <div class="row margin-top-15">
+                        <label class="col col-md-12" for="Session_ToHrs">{{l("ToHrs")}}</label>
+                        <div class="col col-md-12">
+                            <p-calendar id="Session_ToHrs" [(ngModel)]="session.toHrs" timeOnly="true" dataType="string"
+                                hourFormat="24" name="ToHrs" [style]="{'width':'100%'}"
+                                [inputStyle]="{'width':'100%','height':'40px'}"></p-calendar>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button [disabled]="saving" type="button" class="btn btn-default"
+                        (click)="close()">{{l("Cancel")}}</button>
+                    <button type="submit" class="btn btn-primary blue" [disabled]="!sessionForm.form.valid"
+                        [buttonBusy]="saving" [busyText]="l('SavingWithThreeDot')">
+                        <i class="fa fa-save"></i>
+                        <span>{{l("Save")}}</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>

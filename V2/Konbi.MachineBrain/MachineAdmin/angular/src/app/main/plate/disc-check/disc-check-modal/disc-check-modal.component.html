@@ -1,0 +1,80 @@
+<div bsModal #checkDishModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="checkDishModal" aria-hidden="true"
+  [config]="{backdrop: 'static'}">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <form #discForm="ngForm" novalidate autocomplete="off">
+        <div class="modal-header">
+          <h4 class="modal-title">
+            <span>{{l("Plate Inventory Manager")}}</span>
+          </h4>
+          <button type="button" class="close" (click)="close()" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="checking">
+            <div class="check-status" style="display: flex;">
+              <div class="col-4" style="padding: 3px;">
+                <div style="background-color: #eee; font-weight: bold; padding: 15px 10px; display: flow-root;">
+                  <div style="float: left;">Current Plate</div>
+                  <div style="float: right; font-size: 20px;" class="m--font-info">{{listDishAvailabe.length}}</div>
+                </div>
+              </div>
+
+              <div class="col-4" style="padding: 3px;">
+                <div style="background-color: #eee; font-weight: bold; padding: 15px 10px; display: flow-root;">
+                  <div style="float: left;">Scanned Plate</div>
+                  <div style="float: right; font-size: 20px;" class="m--font-info">{{lstScanningDish.length}}</div>
+                </div>
+              </div>
+
+              <div class="col-4" style="padding: 3px;">
+                <div style="background-color: #eee; font-weight: bold; padding: 15px 10px; display: flow-root;">
+                  <div style="float: left;">New Plate</div>
+                  <div style="float: right; font-size: 20px;" class="m--font-info">{{lstListNewDish.length}}</div>
+                </div>
+              </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 15px;">
+              <h3>Please put your plate into the RFID table one by one to start checking.</h3>
+            </div>
+            <div class="tableFixHeadLeft">
+              <table id="tabledishs">
+                  <tr class="m--bg-brand">
+                    <th>#</th>
+                    <th>Model</th>
+                    <th>ID</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                  <tr *ngFor="let dish of lstScanningDish; let i = index">
+                    <td>{{i + 1}}</td>
+                    <td>{{dish.code}}</td>
+                    <td>{{dish.uid}}</td>
+                    <td [style.color]="dish.statusStyle" [innerHTML]="dish.status" style="max-width: 185px;"></td>
+                    <td style="width: 100px;">
+                      <button class="btn btn-danger" (click)="deleteDisc(dish)" type="button">{{l("Remove")}}</button>
+                    </td>
+                  </tr>
+              </table>
+            </div>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <div>
+            <button [disabled]="saving" type="button" class="btn btn-default" (click)="close()">{{l("Cancel")}}</button>
+            <button (click)="btnUpdateSyncClick()" class="btn btn-primary blue" [disabled]="lstScanningDish.length == 0" [buttonBusy]="saving"
+              [busyText]="l('SavingWithThreeDot')">
+              <i class="fa fa-save"></i>
+              <span>{{l("Save")}}</span>
+            </button>
+          </div>
+
+        </div>
+      </form>
+    </div>
+  </div>
+
+</div>

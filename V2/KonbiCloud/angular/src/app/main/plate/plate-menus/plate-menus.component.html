@@ -1,0 +1,252 @@
+<div [@routerTransition]>
+    <div class="m-subheader">
+        <div class="d-flex align-items-center">
+            <div class="mr-auto col-md-6">
+                <h3 class="m-subheader__title">
+                    <span>{{l("Menu Scheduler")}}</span>
+                </h3>
+            </div>
+            <div class="col-md-6 text-right">
+                <input type="file" (change)="importCSV($event.target.files)" accept=".csv" #import style="display:none;"
+                    class="form-control">
+                <button *ngIf="isGranted('Pages.PlateMenus.Import')" type="button"
+                    class="btn btn-primary m--margin-top-5 m--margin-bottom-5" (click)="import.click()">Import</button>
+                <button *ngIf="isGranted('Pages.PlateMenus.Export')" type="button"
+                    class="btn btn-success m--margin-top-5 m--margin-bottom-5" (click)="exportToCsv()">Export</button>
+                <button *ngIf="isGranted('Pages.PlateMenus.Replicate')" (click)="replicateData()"
+                    class="btn btn-primary blue m--margin-top-5 m--margin-bottom-5">{{l("Replicate")}}</button>
+                <button *ngIf="isGranted('Pages.PlateMenus.Generate')" (click)="generateData()"
+                    class="btn btn-primary blue m--margin-top-5 m--margin-bottom-5">{{l("Generate")}}</button>
+            </div>
+        </div>
+    </div>
+    <div class="m-content">
+        <div class="m-portlet m-portlet--mobile">
+            <div class="m-portlet__body">
+
+                <form class="horizontal-form" autocomplete="off">
+                    <div class="m-form m-form--label-align-right">
+                        <div class="row align-items-center m--margin-bottom-10">
+                            <div class="col-md-4">
+                                <div class="form-group m-form__group">
+                                    <label for="DateFilter">{{l("Date")}}</label>
+                                    <input type="date" class="form-control" id="DateFilter" name="DateFilter"
+                                        [(ngModel)]="dateFilter" (change)="reloadPage();">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group m-form__group">
+                                    <label for="SessionFilter">{{l("Session")}}</label>
+                                    <select id="SessionFilter" name="SessionFilter" class="form-control"
+                                        [(ngModel)]="sessionId" (change)="reloadPage();">
+                                        <option *ngFor="let session of sessions" value="{{session.id}}">
+                                            {{session.name}} {{session.fromHrs}} - {{session.toHrs}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group m-form__group">
+                                    <label for="CategoryFilter">{{l("Product Category")}}</label>
+                                    <select id="CategoryFilter" name="CategoryFilter" class="form-control"
+                                        [(ngModel)]="categoryId" (change)="reloadPage();">
+                                        <option value="00000000-0000-0000-0000-000000000000">-- All --</option>
+                                        <option *ngFor="let cate of categories" value="{{cate.id}}">{{cate.name}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row m--margin-bottom-10">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="NameFilter">{{l("Product Name")}}</label>
+                                    <input type="text" class="form-control" id="NameFilter" name="nameFilter"
+                                        [(ngModel)]="nameFilter" (change)="reloadPage();">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="CodeFilter">{{l("Plate Model")}}</label>
+                                    <input type="text" class="form-control" id="CodeFilter" name="codeFilter"
+                                        [(ngModel)]="codeFilter" (change)="reloadPage();">
+                                </div>
+                            </div>
+                            <!-- <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="SKUFilter">{{l("SKU")}}</label>
+                                    <input type="text" class="form-control" id="SKUFilter" name="SKUFilter"
+                                        [(ngModel)]="skuFilter" (change)="reloadPage();">
+                                </div>
+                            </div> -->
+                        </div>
+                    </div>
+                </form>
+
+                <div class="row align-items-center">
+                    <!--<Primeng-Datatable-Start>-->
+                    <div class="primeng-datatable-container" [busyIf]="primengTableHelper.isLoading">
+                        <p-table #dataTable (onLazyLoad)="getPlateMenus($event)" sortField="product.name"
+                            [value]="primengTableHelper.records"
+                            rows="{{primengTableHelper.defaultRecordsCountPerPage}}" [paginator]="false" [lazy]="true"
+                            [scrollable]="true" ScrollWidth="100%" [responsive]="primengTableHelper.isResponsive"
+                            [resizableColumns]="primengTableHelper.resizableColumns">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th pSortableColumn="categoryName" style="width: 150px">
+                                        {{l('Category')}}
+                                        <p-sortIcon field="categoryName"></p-sortIcon>
+                                    </th>
+                                    <th pSortableColumn="product.name">
+                                        {{l('Product')}}
+                                        <p-sortIcon field="product.name"></p-sortIcon>
+                                    </th>
+                                    <th pSortableColumn="product.sku" style="width: 140px">
+                                        {{l('SKU')}}
+                                        <p-sortIcon field="product.sku"></p-sortIcon>
+                                    </th>
+                                    <th pSortableColumn="product.barCode" style="width: 140px">
+                                        {{l('Barcode')}}
+                                        <p-sortIcon field="product.barCode"></p-sortIcon>
+                                    </th>
+                                    <!-- <th pSortableColumn="product.sku">
+                                        {{l('SKU')}}
+                                        <p-sortIcon field="product.sku"></p-sortIcon>
+                                    </th> -->
+                                    <th style="width: 200px">
+                                        {{l('Product Picture')}}
+                                    </th>
+                                    <th pSortableColumn="plateCode">
+                                        {{l('Plate Model')}}
+                                        <p-sortIcon field="plateCode"></p-sortIcon>
+                                    </th>
+                                    <!-- <th style="width: 200px">
+                                        {{l('Plate Picture')}}
+                                    </th> -->
+                                    <th style="width: 120px">
+                                        {{l('Price')}}
+                                        <!-- <p-sortIcon field="price"></p-sortIcon> -->
+                                    </th>
+                                    <th style="width: 140px">
+                                        {{l('ContractorPrice')}}
+                                        <!-- <p-sortIcon field="contractorPrice"></p-sortIcon> -->
+                                    </th>
+                                    <th pSortableColumn="displayOrder" style="width: 135px">
+                                        {{l('Display Order')}}
+                                        <p-sortIcon field="displayOrder"></p-sortIcon>
+                                    </th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-record="$implicit" let-mlIndex="index">
+                                <tr>
+                                    <td style="width: 150px">
+                                        <span class="ui-column-title"> {{l('Category')}}</span>
+                                        {{record.categoryName}}
+                                    </td>
+                                    <td>
+                                        <span class="ui-column-title"> {{l('Name')}}</span>
+                                        {{record.product.name}}
+                                    </td>
+                                    <td style="width: 140px">
+                                        <span class="ui-column-title"> {{l('SKU')}}</span>
+                                        {{record.product.sku}}
+                                    </td>
+                                    <td style="width: 140px">
+                                        <span class="ui-column-title"> {{l('Barcode')}}</span>
+                                        {{record.product.barcode}}
+                                    </td>
+                                    <!-- <td>
+                                        <span class="ui-column-title"> {{l('SKU')}}</span>
+                                        {{record.product.sku}}
+                                    </td> -->
+                                    <td style="width:200px">
+                                        <div *ngFor="let item of record.product.imageUrl.split('|');let i=index"
+                                            style="float: left; margin-left: 10px">
+                                            <img [src]="item" style="width: 80px; height: 80px;">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="ui-column-title">Plate Model</span>
+                                        <select id="{{record.id}}" name="plateModelsChoose" class="form-control"
+                                            (change)="updatePlate($event, record);">
+                                            <option [selected]="record.plateId === null"
+                                                value="00000000-0000-0000-0000-000000000000"> None </option>
+                                            <option *ngFor="let p of plateModels"
+                                                [selected]="p.plate.id === record.plate?.id" value="{{p.plate.id}}">
+                                                {{p.plate.code}} - {{p.plate.name}}</option>
+                                        </select>
+                                    </td>
+                                    <!-- <td style="width:200px">
+                                        <div *ngIf="record.plate">
+                                            <div *ngFor="let item of record.plate.imageUrl.split('|');let i=index"
+                                                style="float: left; margin-left: 10px">
+                                                <img [src]="item" style="width: 80px; height: 80px;">
+                                            </div>
+                                        </div>
+                                    </td> -->
+                                    <td style="width: 120px">
+                                        <span class="ui-column-title"> {{l('Price')}}</span>
+                                        <div *ngIf="isGranted('Pages.PlateMenus.Edit');then show_input else hide_input">
+                                        </div>
+                                        <ng-template #show_input>
+                                            <input type="number" class="form-control" id="price{{mlIndex}}"
+                                                name="price{{mlIndex}}" [(ngModel)]="record.price"
+                                                (change)="updatePrice(record);">
+                                        </ng-template>
+                                        <ng-template #hide_input>
+                                            {{record.price}}
+                                        </ng-template>
+
+                                    </td>
+                                    <td style="width: 140px">
+                                        <span class="ui-column-title"> {{l('ContractorPrice')}}</span>
+                                        <div
+                                            *ngIf="isGranted('Pages.PlateMenus.Edit');then show_input_contractor_price else hide_input_contractor_price">
+                                        </div>
+                                        <ng-template #show_input_contractor_price>
+                                            <input type="number" class="form-control" id="priceStrategy{{mlIndex}}"
+                                                name="priceStrategy{{mlIndex}}" [(ngModel)]="record.priceStrategy"
+                                                (change)="updatePriceStrategy
+                                        (record);">
+                                        </ng-template>
+                                        <ng-template #hide_input_contractor_price>
+                                            {{record.priceStrategy}}
+                                        </ng-template>
+                                    </td>
+                                    <td style="width: 135px">
+                                        <span class="ui-column-title">Display Order</span>
+                                        <div
+                                            *ngIf="isGranted('Pages.PlateMenus.Edit');then show_input_display_order else hide_input_display_order">
+                                        </div>
+                                        <ng-template #show_input_display_order>
+                                            <input type="number" class="form-control" id="displayOrder{{mlIndex}}"
+                                                name="displayOrder{{mlIndex}}" [(ngModel)]="record.displayOrder"
+                                                (change)="updateDisplayOrder(record);">
+                                        </ng-template>
+                                        <ng-template #hide_input_display_order>
+                                            {{record.displayOrder}}
+                                        </ng-template>
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                        <div class="primeng-no-data" *ngIf="primengTableHelper.totalRecordsCount == 0">
+                            {{l('NoData')}}
+                        </div>
+                        <div class="primeng-paging-container">
+                            <p-paginator rows="{{primengTableHelper.defaultRecordsCountPerPage}}" #paginator
+                                (onPageChange)="getPlateMenus($event)"
+                                [totalRecords]="primengTableHelper.totalRecordsCount"
+                                [rowsPerPageOptions]="primengTableHelper.predefinedRecordsCountPerPage">
+                            </p-paginator>
+                            <span class="total-records-count">
+                                {{l('TotalRecordsCount', primengTableHelper.totalRecordsCount)}}
+                            </span>
+                        </div>
+                    </div>
+                    <!--<Primeng-Datatable-End>-->
+                </div>
+            </div>
+        </div>
+        <replicateModal #replicateModal></replicateModal>
+    </div>

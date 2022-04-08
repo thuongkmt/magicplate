@@ -1,0 +1,37 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\common.props"></Import>
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <AssetTargetFallback>$(AssetTargetFallback);portable-net45+win8+wp8+wpa81;</AssetTargetFallback>
+    <RootNamespace>KonbiCloud</RootNamespace>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+    <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Migrations\20181026132333_test.cs" />
+    <Compile Remove="Migrations\20190104050155_ChangeDiscId.cs" />
+    <Compile Remove="Migrations\20190104050155_ChangeDiscId.Designer.cs" />
+    <Compile Remove="Migrations\20190917051619_fixConnectionIssueProduct-Category2.cs" />
+    <Compile Remove="Migrations\20190917051619_fixConnectionIssueProduct-Category2.Designer.cs" />
+    <Compile Remove="Migrations\20191219043205_xx.cs" />
+    <Compile Remove="Migrations\20191219043205_xx.Designer.cs" />
+    <Compile Remove="Migrations\20200917085522_ProductMenuAddIndexes.cs" />
+    <Compile Remove="Migrations\20200917085522_ProductMenuAddIndexes.Designer.cs" />
+    <Compile Remove="Migrations\20200917085634_ProductMenuAddIndexes.cs" />
+    <Compile Remove="Migrations\20200917085634_ProductMenuAddIndexes.Designer.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.2.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.2.6">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.2.6" />
+    <PackageReference Include="MySql.Data.Entity" Version="6.10.8" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="2.2.6" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\KonbiCloud.Core\KonbiCloud.Core.csproj" />
+  </ItemGroup>
+</Project>

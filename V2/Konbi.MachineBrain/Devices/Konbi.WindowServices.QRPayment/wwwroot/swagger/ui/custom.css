@@ -1,0 +1,19 @@
+﻿.swagger-ui .topbar {
+  /*background-color: #000;
+  border-bottom: 3px solid #547f00;*/
+}
+
+
+.hardware-table {
+  width: auto !important;
+  padding: 0px !important;
+}
+
+  .hardware-table td:nth-child(1) {
+    font-weight: bold;
+  }
+
+  .hardware-table td:nth-child(2) {
+    color: #61affe;
+    font-weight: bold;
+  }

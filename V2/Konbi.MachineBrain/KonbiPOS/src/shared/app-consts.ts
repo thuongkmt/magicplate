@@ -1,0 +1,1 @@
+export const MSG_PLACE_TRAY = 'Place Tray to Start Transaction';

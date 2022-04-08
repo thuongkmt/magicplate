@@ -1,0 +1,34 @@
+{
+  "slackChannel": {
+    "machineName": "Machine Name",
+    "token": "",
+    "channel": "#workpeople_alert",
+    "postUrl": "https://hooks.slack.com/services/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"
+  },
+
+  "rfidServiceName": [
+    {
+      "serviceName": "Konbi.AlarmLight"
+    },
+    {
+      "serviceName": "Konbi.Iuc"
+    },
+    {
+      "serviceName": "Konbi.RFIDTable"
+    }
+  ],
+  "rfidWindowsApp": [
+    {
+      "fullPath": "C:\\Konbibrain\\rfidtabledeployment\\app\\TakeAwayPrice\\KonbiBrain.RfidTable.TakeAwayPrice.exe"
+    },
+    {
+      "fullPath": "C:\\Konbibrain\\rfidtabledeployment\\app\\Camera\\Konbi.Camera.exe"
+    }
+  ],
+  "EventLogTrackers": [
+    {
+      "LogName": "System",
+      "TrackEventIDs": [ 41, 6008, 1074 ]
+    }
+  ]
+}

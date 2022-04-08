@@ -1,0 +1,265 @@
+import { Component, ViewChild, Injector, Output, EventEmitter, ElementRef } from '@angular/core';
+import { ModalDirective } from 'ngx-bootstrap';
+import { PlateDto } from '@shared/service-proxies/plate-service-proxies';
+import { AppComponentBase } from '@shared/common/app-component-base';
+import { PlateServiceProxy, ImportResult, CreateOrEditPlateDto } from '@shared/service-proxies/plate-service-proxies';
+import { Papa } from 'ngx-papaparse';
+
+@Component({
+    selector: 'importPlateModal',
+    templateUrl: './import-plate-modal.component.html',
+    styleUrls: ['./create-or-edit-plate-modal.component.css']
+})
+export class ImportPlateModalComponent extends AppComponentBase {
+
+    @ViewChild('importPlateModal') modal: ModalDirective;
+    @Output() modalSave: EventEmitter<any> = new EventEmitter<any>();
+    @ViewChild('import') myInputVariable: ElementRef;
+
+    importStep = 1;
+    active = false;
+    saving = false;
+
+    //upload photo
+    files: File[] = [];
+    lastInvalids: any;
+    lastFileAt: Date;
+    isPlate = true;
+
+    /**
+     * Get current date.
+     */
+    getDate() {
+        return new Date();
+    }
+
+    /**
+     * constructor.
+     * @param injector injector.
+     * @param _platesServiceProxy plates sevice proxy.
+     * @param papa papa.
+     */
+    constructor(
+        injector: Injector,
+        private _platesServiceProxy: PlateServiceProxy,
+        private papa: Papa
+    ) {
+        super(injector);
+    }
+
+    show(isPlate: boolean): void {
+        this.isPlate = isPlate;
+        this.active = true;
+        this.modal.show();
+    }
+
+    /**
+     * Close modal.
+     */
+    close(): void {
+        this.importStep = 1;
+        this.files = [];
+        if (this.myInputVariable) {
+            this.myInputVariable.nativeElement.value = '';
+        }
+        this.active = false;
+        this.saving = false;
+        this.modal.hide();
+    }
+
+    /**
+     * Click go to step 2 then upload file csv.
+     */
+    btnNextToStep2Click() {
+        //upload images first
+        if (this.files.length > 0) {
+            this.saving = true;
+            this._platesServiceProxy.importCsvUploadImages(this.files)
+                .subscribe(
+                    response => {
+                        this.saving = false;
+                        if (response.result) {
+                            this.importStep = 2;
+                        } else {
+                            abp.message.error('Upload error, please check image files and try again');
+                        }
+                    }, err => {
+                        abp.message.error('Upload error, please check image files and try again');
+                    }
+                );
+        } else {
+            this.importStep = 2;
+        }
+    }
+
+    /**
+     * Import file.
+     * @param files List file from upload file.
+     */
+    importCSV(files) {
+        if (files.length === 0) {
+            return;
+        }
+        let file: File = files[0];
+        //validate file type
+        let valToLower = file.name.toLowerCase();
+        // regexp extention of file.
+        let regex = new RegExp('(.*?)\.(csv)$');
+        if (!regex.test(valToLower)) {
+            abp.message.error('Please select csv file');
+            this.myInputVariable.nativeElement.value = '';
+            return;
+        }
+        // Reading file csv.
+        let myReader = new FileReader();
+        myReader.onloadend = (e) => {
+            let fileContent = myReader.result.toString();
+            this.papa.parse(fileContent, {
+                header: true,
+                delimiter: ',',
+                worker: false,
+                skipEmptyLines: true,
+                complete: (result) => {
+                    let errorList = '';
+                    if (result.errors.length > 0) {
+
+                        result.errors.forEach(element => {
+                            errorList += ('<div>' + element + '</div>');
+                        });
+                        //var errorList = result.errors.map(e => e.row).join(",");
+                        let mess = new ImportResult();
+                        mess.successCount = 0;
+                        mess.errorCount = result.errors.length;
+                        mess.errorList = errorList;
+                        this.showImportMessage(mess, 'Invalid Data');
+                        this.myInputVariable.nativeElement.value = '';
+                        return;
+                    }
+
+                    //check empty plate code
+                    let csvImportData = new Array<CreateOrEditPlateDto>();
+                    let csvData = new Array<CreateOrEditPlateDto>();
+                    let errorCount = 0;
+                    for (let i = 0; i < result.data.length; i++) {
+                        if (this.isPlate) {
+                            let record = result.data[i];
+                            let item = new CreateOrEditPlateDto();
+                            item.plateCategoryName = record['Plate Category Name'];
+                            item.name = record['Plate Name'];
+                            item.desc = record['Plate Description'];
+                            item.code = record['Plate Code'].replace(/_/g, '');
+                            item.color = record['Plate Color'];
+                            item.imageUrl = record['Plate Image'];
+                            item.isPlate = this.isPlate;
+
+                            if (item.code.trim() === '') {
+                                errorList += ('<div>Row ' + (i + 2) + ' plate code is empty</div>');
+                                errorCount++;
+                                continue;
+                            }
+
+                            if (item.name.trim() === '') {
+                                errorList += ('<div>Row ' + (i + 2) + ' plate name is empty</div>');
+                                errorCount++;
+                            }
+                            csvData.push(item);
+                            csvImportData.push(item);
+                        } else {
+                            let record = result.data[i];
+                            let item = new CreateOrEditPlateDto();
+                            item.name = record['Tray Name'];
+                            item.desc = record['Tray Description'];
+                            item.code = record['Tray Code'].replace(/_/g, '');
+                            item.color = record['Tray Color'];
+                            item.imageUrl = record['Tray Image'];
+                            item.isPlate = this.isPlate;
+
+                            if (item.code === '') {
+                                errorList += ('<div>Row ' + (i + 2) + ' code is empty</div>');
+                                errorCount++;
+                            }
+
+                            if (item.plateCategoryId === null) {
+                                errorList += ('<div>Row ' + (i + 2) + ' category id is empty</div>');
+                                errorCount++;
+                            }
+                            csvImportData.push(item);
+                        }
+                    }
+
+                    if (errorList !== '') {
+                        let mess = new ImportResult();
+                        mess.successCount = 0;
+                        mess.errorCount = errorCount;
+                        mess.errorList = errorList;
+                        this.showImportMessage(mess, 'Invalid Data');
+                        this.myInputVariable.nativeElement.value = '';
+                        return;
+                    }
+
+                    //check duplicate plate code
+                    let sorted_arr = csvImportData.slice().sort((a, b) => b.code < a.code ? 1 : -1);
+                    let resultsError = [];
+                    let resultsErrorName = [];
+                    for (let i = 0; i < csvData.length - 1; i++) {
+                        if (csvData[i + 1].code.trim() === csvData[i].code.trim()) {
+                            resultsError.push(csvData[i]);
+                        }
+                        if (csvData[i + 1].name.trim() === csvData[i].name.trim()) {
+                            resultsErrorName.push(csvData[i]);
+                        }
+                    }
+                    if (resultsError.length > 0) {
+                        resultsError.forEach(element => {
+                            let index = csvData.indexOf(element) + 2;
+                            errorList += ('<div>Row ' + index + ': Duplicate code ' + element.code + '</div>');
+                        });
+                        let mess = new ImportResult();
+                        mess.successCount = 0;
+                        mess.errorCount = resultsError.length;
+                        mess.errorList = errorList;
+                        this.showImportMessage(mess, 'Invalid Data');
+                        this.myInputVariable.nativeElement.value = '';
+                        return;
+                    }
+
+                    if (resultsErrorName.length > 0) {
+                        resultsErrorName.forEach(element => {
+                            let index = csvData.indexOf(element) + 2;
+                            errorList += ('<div>Row ' + index + ': Duplicate Name ' + element.name + '</div>');
+                        });
+                        let mess = new ImportResult();
+                        mess.successCount = 0;
+                        mess.errorCount = resultsErrorName.length;
+                        mess.errorList = errorList;
+                        this.showImportMessage(mess, 'Invalid Data');
+                        this.myInputVariable.nativeElement.value = '';
+                        return;
+                    }
+
+                    // validate ok, submit data
+                    this._platesServiceProxy.importPlate(csvImportData)
+                        .subscribe((result) => {
+                            this.showImportMessage(result, 'Import Result');
+                            this.close();
+                            this.modalSave.emit(null);
+                        });
+                }
+            });
+        };
+        myReader.readAsText(file);
+    }
+
+    /**
+     * Show message after import.
+     * @param result result import.
+     * @param title Title message.
+     */
+    showImportMessage(result: ImportResult, title: string) {
+        let content = '<div class="text-left" style="margin-left: 20px;"><div>- Success: ' + result.successCount + '</div>';
+        content += '<div>- Failed: ' + result.errorCount + '</div>';
+        content += '<div>- Failed Rows: ' + result.errorList + '</div></div>';
+
+        abp.message.info(content, title, true);
+    }
+}

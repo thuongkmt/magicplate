@@ -1,0 +1,383 @@
+.row {
+  margin-right: 0px;
+  margin-left: 0px;
+
+  .col,
+  .col-1,
+  .col-10,
+  .col-11,
+  .col-12,
+  .col-2,
+  .col-3,
+  .col-4,
+  .col-5,
+  .col-6,
+  .col-7,
+  .col-8,
+  .col-9,
+  .col-auto,
+  .col-lg,
+  .col-lg-1,
+  .col-lg-10,
+  .col-lg-11,
+  .col-lg-12,
+  .col-lg-2,
+  .col-lg-3,
+  .col-lg-4,
+  .col-lg-5,
+  .col-lg-6,
+  .col-lg-7,
+  .col-lg-8,
+  .col-lg-9,
+  .col-lg-auto,
+  .col-md,
+  .col-md-1,
+  .col-md-10,
+  .col-md-11,
+  .col-md-12,
+  .col-md-2,
+  .col-md-3,
+  .col-md-4,
+  .col-md-5,
+  .col-md-6,
+  .col-md-7,
+  .col-md-8,
+  .col-md-9,
+  .col-md-auto,
+  .col-sm,
+  .col-sm-1,
+  .col-sm-10,
+  .col-sm-11,
+  .col-sm-12,
+  .col-sm-2,
+  .col-sm-3,
+  .col-sm-4,
+  .col-sm-5,
+  .col-sm-6,
+  .col-sm-7,
+  .col-sm-8,
+  .col-sm-9,
+  .col-sm-auto,
+  .col-xl,
+  .col-xl-1,
+  .col-xl-10,
+  .col-xl-11,
+  .col-xl-12,
+  .col-xl-2,
+  .col-xl-3,
+  .col-xl-4,
+  .col-xl-5,
+  .col-xl-6,
+  .col-xl-7,
+  .col-xl-8,
+  .col-xl-9,
+  .col-xl-auto {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+}
+
+.card {
+  .card-body {
+    padding: 0;
+  }
+}
+
+.btn-cancel,
+.btn-confirm {
+  height: 80px;
+  width: 165px;
+  font-size: 36px;
+}
+
+.btn-confirm {
+  background-color: #6AA84F;
+  border-color: #6AA84F;
+  color: #fff
+}
+
+.btn-cancel {
+  background-color: #ccc;
+  border-color: #ccc;
+  color: #000;
+}
+
+.left-content,
+.right-content {
+  // height: 1024px;
+  height: 712px; // Convert to 15.6 Inch.
+  background: #eee;
+}
+
+.center-content {
+  // height: 722px;
+  height: 515px; // Convert to 15.6 Inch.
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.center-content-bottom {
+  margin-top: 5px;
+  // height: 296px;
+  height: 192px; // Convert to 15.6 Inch.
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.footer-bar {
+  height: 42px;
+  margin-top: 5px;
+  background: #eee;
+  box-shadow: 0px 0px 3px -1px rgba(0, 0, 0, 0.3);
+
+  .connect-status-icon,
+  .session-info {
+    margin-top: 8px;
+    margin-left: 5px;
+  }
+
+  .session-info span {
+    margin-left: 8px;
+    font-size: 16px;
+  }
+
+  .connected-success {
+    color: #28a745;
+  }
+
+  .connected-failed {
+    color: #dc3545;
+  }
+}
+
+.table-bordered {
+  border-bottom: none !important;
+}
+
+table {
+  display: flex;
+  flex-flow: column;
+  width: 100%;
+  // height: 579px;
+  height: 405px; // Convert to 15.6 Inch.
+  background: #fff;
+
+  .font-weight-bold {
+    // font-size: 36px;
+    font-size: 20px; // Convert to 15.6 Inch.
+  }
+
+  .font-weight-normal {
+    // font-size: 28px;
+    font-size: 18px; // Convert to 15.6 Inch.
+  }
+
+  thead {
+    flex: 0 0 auto;
+  }
+
+  tbody {
+    flex: 1 1 auto;
+    display: block;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  tr {
+    width: 100%;
+    display: table;
+    table-layout: fixed;
+  }
+
+  .hightlight {
+    background: #ccc;
+  }
+}
+
+.font-size-bottom {
+  // font-size: 36px;
+  font-size: 28px; // Convert to 15.6 Inch.
+}
+
+.font-size-gst {
+  // font-size: 36px;
+  font-size: 19px; // Convert to 15.6 Inch.
+}
+
+.payment-state-success {
+  background-color: #28a745;
+
+  .message {
+    span {
+      color: #000;
+    }
+  }
+}
+
+.payment-state-warning {
+  background-color: #e0a800;
+
+  .message {
+    span {
+      color: #000;
+    }
+  }
+}
+
+.payment-state-danger {
+  background-color: #dc3545;
+
+  .message {
+    span {
+      color: #000;
+    }
+  }
+}
+
+.payment-message-container {
+  border: 4px solid rgba(0, 0, 0, .1);
+  // height: 234px;
+  height: 150px; // Convert to 15.6 Inch.
+  border-radius: 5px;
+  padding: 10px;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  width: 100%;
+
+  .message {
+    position: absolute;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+
+    span {
+      font-family: Arial, Helvetica, sans-serif;
+      width: 100%;
+      height: 100%;
+      // font-size: 36px;
+      font-size: 28px; // Convert to 15.6 Inch.
+      font-weight: bolder;
+    }
+  }
+}
+
+.prod-card {
+  float: left;
+  // width: 32.5%;
+  width: 24%; // Convert to 15.6 Inch.
+  // height: 150px;
+  height: 165px; // Convert to 15.6 Inch.
+  margin-left: 5px;
+  margin-top: 5px;
+  box-shadow: 0px 0px 3px -1px rgba(0, 0, 0, 0.3);
+  border-radius: 5px;
+  box-sizing: border-box;
+  padding: 5px;
+  background: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .card-title {
+    color: #000;
+    font-family: Arial, Helvetica, sans-serif;
+    // font-size: 28px;
+    font-size: 20px; // Convert to 15.6 Inch.
+    text-align: center;
+  }
+
+  .card-subtitle {
+    color: #000;
+    font-family: Arial, Helvetica, sans-serif;
+    // font-size: 28px;
+    font-size: 20px; // Convert to 15.6 Inch.
+    font-weight: 800;
+    text-align: center;
+  }
+}
+
+.prod-card:active,
+.cate-card:active,
+.void-item-btn:active {
+  background: #e4e4e4;
+}
+
+.highlight-border {
+  border: solid 2px #6AA84F;
+}
+
+.cate-card {
+  float: left;
+  // width: 32.5%;
+  width: 24%; // Convert to 15.6 Inch.
+  height: 95px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  margin-left: 5px;
+  margin-top: 5px;
+  box-shadow: 0px 0px 3px -1px rgba(0, 0, 0, 0.3);
+  border-radius: 5px;
+  box-sizing: border-box;
+  background: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .card-title {
+    color: #000;
+    font-family: Arial, Helvetica, sans-serif;
+    // font-size: 28px;
+    font-size: 24px; // Convert to 15.6 Inch.
+    font-weight: 800;
+    text-align: center;
+  }
+}
+
+.modal-lg {
+  height: 500px;
+}
+
+.modal-footer {
+  justify-content: center;
+}
+
+.btn-disabled {
+  background-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+.btn-enabled {
+  background: #6AA84F !important;
+  color: #fff;
+}
+
+.btn-cancel-enabled {
+  background: #ff386a !important;
+  color: #fff;
+}
+
+
+a {
+  text-decoration: none !important;
+}
+
+a :hover {
+  text-decoration: none;
+}
+
+.item-product {
+  // height: 100px;
+  height: 86%; // Convert to 15.6 Inch.
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  // width: 160px;
+  width: 100%; // Convert to 15.6 Inch.
+  display: block;
+  display: -webkit-box;
+}
+.disappear{
+  display: none !important;
+}

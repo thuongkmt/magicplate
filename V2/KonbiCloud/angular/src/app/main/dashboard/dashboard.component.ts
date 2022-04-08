@@ -1,0 +1,242 @@
+import { AfterViewInit, Component, Injector, ViewEncapsulation } from '@angular/core';
+import { AppSalesSummaryDatePeriod } from '@shared/AppEnums';
+import { appModuleAnimation } from '@shared/animations/routerTransition';
+import { AppComponentBase } from '@shared/common/app-component-base';
+import { DashboardServiceProxy, MachineStatData, TransactionForToday } from '@shared/service-proxies/dashboard-service-proxies';
+import { curveBasis } from 'd3-shape';
+
+import * as _ from 'lodash';
+declare let d3, Datamap: any;
+
+
+abstract class DashboardChartBase {
+    loading = true;
+
+    showLoading() {
+        setTimeout(() => { this.loading = true; });
+    }
+
+    hideLoading() {
+        setTimeout(() => { this.loading = false; });
+    }
+}
+
+class DashboardHeaderStats extends DashboardChartBase {
+
+    totalTransSale = 0;
+    totalTransToday = 0;
+    totalTransCurrentSession = 0;
+    totalTransCurrentSessionSale = 0;
+
+    init(totalTransSale, totalTransToday, totalTransCurrentSession, totalTransCurrentSessionSale) {
+        this.totalTransSale = totalTransSale;
+        this.totalTransToday = totalTransToday;
+        this.totalTransCurrentSession = totalTransCurrentSession;
+        this.totalTransCurrentSessionSale = totalTransCurrentSessionSale;
+        this.hideLoading();
+    }
+}
+
+class SalesSummaryChart extends DashboardChartBase {
+    totalSales = 0;
+    totalTrans = 0;
+
+    selectedDatePeriod: AppSalesSummaryDatePeriod = AppSalesSummaryDatePeriod.Daily;
+
+    data = [];
+
+    constructor(
+        private _dashboardService: DashboardServiceProxy,
+        private _containerElement: any) {
+        super();
+    }
+
+    init(salesSummaryData) {
+        this.totalSales = 0;
+        this.totalTrans = 0;
+        salesSummaryData.forEach(element => {
+            this.totalSales += element.sales;
+            this.totalTrans += element.trans;
+        });
+        this.setChartData(salesSummaryData);
+        this.hideLoading();
+    }
+
+    setChartData(items): void {
+        let sales = [];
+        let trans = [];
+
+        _.forEach(items, (item) => {
+
+            sales.push({
+                'name': item['period'],
+                'value': item['sales']
+            });
+
+            trans.push({
+                'name': item['period'],
+                'value': item['trans']
+            });
+        });
+
+        this.data = [
+            {
+                'name': 'Sales',
+                'series': sales
+            }, {
+                'name': 'Transactions',
+                'series': trans
+            }
+        ];
+    }
+
+    reload(datePeriod) {
+        this.selectedDatePeriod = datePeriod;
+
+        this.showLoading();
+        this._dashboardService
+            .getSalesSummary(datePeriod)
+            .subscribe(result => {
+                this.init(result.salesSummary);
+                // this.setChartData(result.salesSummary);
+                // this.hideLoading();
+            });
+    }
+}
+
+class SessionStatsTable extends DashboardChartBase {
+    stats: Array<any>;
+    colors = ['#00c5dc', '#f4516c', '#34bfa3', '#ffb822'];
+    customColors = [
+        { name: '1', value: '#00c5dc' },
+        { name: '2', value: '#f4516c' },
+        { name: '3', value: '#34bfa3' },
+        { name: '4', value: '#ffb822' },
+        { name: '5', value: '#00c5dc' }
+    ];
+
+    curve: any = curveBasis;
+
+    constructor(private _dashboardService: DashboardServiceProxy) {
+        super();
+    }
+
+    init() {
+        this.reload();
+    }
+
+    formatData(): any {
+        for (let j = 0; j < this.stats.length; j++) {
+            let stat = this.stats[j];
+
+            let series = [];
+            for (let i = 0; i < stat.change.length; i++) {
+                series.push({
+                    name: i + 1,
+                    value: stat.change[i]
+                });
+            }
+
+            stat.changeData = [
+                {
+                    'name': j + 1,
+                    'series': series
+                }
+            ];
+
+        }
+    }
+
+    reload() {
+        this.showLoading();
+        this._dashboardService
+            .getSessionStats()
+            .subscribe(result => {
+                this.stats = result.sessionStat;
+               // this.formatData();
+                this.hideLoading();
+            });
+    }
+}
+
+class MachineStatsTable extends DashboardChartBase {
+    public view: any[] = [, 260];
+    public single = [];
+
+    constructor(private _dashboardService: DashboardServiceProxy) {
+        super();
+    }
+
+    init() {
+        this.reload();
+    }
+
+    formatData(stats: MachineStatData[]): any {
+        this.single = [];
+        for (let i = 0; i < stats.length; i++) {
+            this.single.push({ 'name': stats[i].machineName, 'value': stats[i].totalSale.toFixed(2) });
+        }
+    }
+
+    reload() {
+        this._dashboardService
+            .getMachineStats()
+            .subscribe(result => {
+                this.formatData(result.machineStat);
+            });
+    }
+}
+
+@Component({
+    templateUrl: './dashboard.component.html',
+    styleUrls: ['./dashboard.component.less'],
+    encapsulation: ViewEncapsulation.None,
+    animations: [appModuleAnimation()]
+})
+export class DashboardComponent extends AppComponentBase implements AfterViewInit {
+
+    appSalesSummaryDateInterval = AppSalesSummaryDatePeriod;
+    selectedSalesSummaryDatePeriod: AppSalesSummaryDatePeriod = AppSalesSummaryDatePeriod.Daily;
+
+    dashboardHeaderStats: DashboardHeaderStats;
+    salesSummaryChart: SalesSummaryChart;
+    sessionStatsTable: SessionStatsTable;
+    machineStatsTable: MachineStatsTable;
+    transactionForToday: TransactionForToday[] = [];
+
+    constructor(
+        injector: Injector,
+        private _dashboardService: DashboardServiceProxy
+    ) {
+        super(injector);
+        this.dashboardHeaderStats = new DashboardHeaderStats();
+        this.salesSummaryChart = new SalesSummaryChart(this._dashboardService, 'salesStatistics');
+        this.sessionStatsTable = new SessionStatsTable(this._dashboardService);
+        this.machineStatsTable = new MachineStatsTable(this._dashboardService);
+    }
+
+    getDashboardStatisticsData(datePeriod): void {
+        this.salesSummaryChart.showLoading();
+
+        this._dashboardService
+            .getDashboardData(datePeriod)
+            .subscribe(result => {
+                this.dashboardHeaderStats.init(result.totalTransSale, result.totalTransToday, result.totalTransCurrentSession, result.totalTransCurrentSessionSale);
+                this.salesSummaryChart.init(result.salesSummary);
+            });
+        this.machineStatsTable.init();
+        // Get transactions for today.
+        this._dashboardService
+        .getTransactionForToday()
+        .subscribe(result => {
+            this.transactionForToday = result;
+        });
+    }
+
+    ngAfterViewInit(): void {
+        this.getDashboardStatisticsData(AppSalesSummaryDatePeriod.Daily);
+        this.sessionStatsTable.init();
+    }
+}
+
+

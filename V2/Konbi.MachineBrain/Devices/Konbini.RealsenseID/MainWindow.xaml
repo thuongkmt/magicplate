@@ -1,0 +1,49 @@
+﻿<Window x:Class="Konbini.RealsenseID.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Konbini.RealsenseID"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="10" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="10" />
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="10"/>
+        </Grid.RowDefinitions>
+
+        <Label Content="Facial recognition"
+               FontSize="20px"
+               Grid.Row="0"
+               Grid.Column="1"
+               />
+        <Button 
+            Content="Enroll User" 
+            HorizontalAlignment="Left" 
+            Padding="7"
+            BorderBrush="AliceBlue"
+            Background="LimeGreen"
+            Grid.Row="2"
+            Grid.Column="1" Click="Enroll_Click"/>
+        <TextBox 
+            Text ="Input your user id"
+            Margin="100 0 0 0"
+            Grid.Row="2"
+            Grid.Column="1"/>
+        <ListView  
+                Name="lvDataBinding"
+                Grid.Row="1"
+                Grid.Column="1">
+        </ListView>
+        
+    </Grid>
+</Window>

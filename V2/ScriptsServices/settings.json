@@ -1,0 +1,21 @@
+{
+  "LocalAdminConfig": {    
+    "Angular": "..\\Konbi.MachineBrain\\MachineAdmin\\angular",
+    "Api": "..\\Konbi.MachineBrain\\MachineAdmin\\aspnet-core",
+    "CustomerUI": "..\\Konbi.MachineBrain\\CustomerUI\\RFIDTableNew",
+    "DevicesFolder": "..\\Konbi.MachineBrain\\Devices",
+    "POSFolder": "..\\Konbi.MachineBrain\\KonbiPOS"
+  },
+  "CloudAdminConfig": {
+    "Angular": "..\\KonbiCloud\\angular",
+    "Api": "..\\KonbiCloud\\aspnet-core"
+  },
+    "publishFolder": {
+      "root": "c:\\cotftable-publish",
+      "adminAngular": "\\angular",
+      "adminApi": "\\api",
+      "customerUI": "\\ui",
+      "services": "\\services",
+	  "POS": "\\POS"
+    }
+  }
